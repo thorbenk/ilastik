@@ -103,9 +103,11 @@ class OpCalcDepth(Operator):
         numLanes = len(self.inputLF)
         assert numLanes == laneIndex, "Image lanes must be appended."        
         self.inputLF.resize(numLanes+1)
+        self.outputLF.resize(numLanes+1)
         
     def removeLane(self, laneIndex, finalLength):
         self.inputLF.removeSlot(laneIndex, finalLength)
+        self.outputLF.removeSlot(laneIndex, finalLength)
 
     def getLane(self, laneIndex):
         return OperatorSubView(self, laneIndex)
