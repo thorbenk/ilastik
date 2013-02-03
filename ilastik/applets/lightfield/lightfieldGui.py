@@ -26,19 +26,19 @@ class LightfieldGui(LayerViewerGui):
         self._drawers = uic.loadUi(self.APPLET_DRAWER_PATH)
         self._drawers.editDepthSubmit.clicked.connect(self.editDepth)
         
-        def updateDrawerFromOperator():
-            innerScale, outerScale = (0.8,0.6)
-
-            if self.topLevelOperatorView.innerScale.ready():
-                innerScale = self.topLevelOperatorView.ScalingFactor.value
-            if self.topLevelOperatorView.outerScale.ready():
-                outerScale = self.topLevelOperatorView.Offset.value
-
-            self._drawer.editDepthInner.setValue(innerScale)
-            self._drawer.editDepthOuter.setValue(outerScale)
-            
-        self.topLevelOperatorView.innerScale.notifyDirty( bind(updateDrawerFromOperator) )
-        self.topLevelOperatorView.outerScale.notifyDirty( bind(updateDrawerFromOperator) )
+#        def updateDrawerFromOperator():
+#            innerScale, outerScale = (0.8,0.6)
+#
+#            if self.topLevelOperatorView.innerScale.ready():
+#                innerScale = self.topLevelOperatorView.ScalingFactor.value
+#            if self.topLevelOperatorView.outerScale.ready():
+#                outerScale = self.topLevelOperatorView.Offset.value
+#
+#            self._drawer.editDepthInner.setValue(innerScale)
+#            self._drawer.editDepthOuter.setValue(outerScale)
+#            
+#        self.topLevelOperatorView.innerScale.notifyDirty( bind(updateDrawerFromOperator) )
+#        self.topLevelOperatorView.outerScale.notifyDirty( bind(updateDrawerFromOperator) )
         
 #        if not self.topLevelOperatorView.innerScale.ready():
 #            self.topLevelOperatorView.
@@ -55,7 +55,7 @@ class LightfieldGui(LayerViewerGui):
 
         self.topLevelOperatorView.innerScale.setValue(inner)
         self.topLevelOperatorView.outerScale.setValue(outer)
-    
+        
 
     
 #    def setupLayers(self ):

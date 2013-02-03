@@ -41,5 +41,5 @@ class LightfieldWorkflow(Workflow):
         opLightfield = self.lightfieldApplet.topLevelOperator.getLane(laneIndex)
 
         # Connect top-level operators
-        opLightfield.InputImage.connect( opDataSelection.Image )
+        opLightfield.Input.connect( opDataSelection.Image )
         

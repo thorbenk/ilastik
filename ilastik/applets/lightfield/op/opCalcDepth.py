@@ -74,6 +74,9 @@ class OpCalcDepth(Operator):
     
     
     def setupOutputs(self):
+        if self.inputLF.meta.shape is None:
+            print "inputLF has no shape"
+            return
         self.outputLF.meta.assignFrom(self.inputLF.meta)
         shape = self.outputLF.meta.shape
         self.outputLF.meta.shape = (shape[:4] + (1,))
