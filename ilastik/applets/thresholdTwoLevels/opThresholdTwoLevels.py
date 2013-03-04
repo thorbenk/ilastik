@@ -54,12 +54,18 @@ class OpThresholdTwoLevels(Operator):
         cc_low = self.extractCC(smoothed, self.LowThreshold.value)
         
         th_high = self.filterCC(cc_high)
+
+        cc_low = cc_low.view(numpy.ndarray) #otherwise vigra complains about multiplication
+        th_high = th_high.view(numpy.ndarray)
+        prod = th_high * cc_low
+        result[:] = prod.astype(numpy.bool)
+        
+        '''
+        #NOTE: this part should be used, if you want to get a label image back
+        #because of the interface of opObjectExtract, we only need the thresholded image
+        #and we re-do the labeling there
         
         maxregion = numpy.max(cc_low)
-
-        cc_low = cc_low.view(numpy.ndarray)
-        prod = th_high * cc_low
-        
         passed = numpy.unique(prod)
         
         newsizes = numpy.zeros((maxregion+2,), dtype=numpy.uint32)
@@ -70,24 +76,25 @@ class OpThresholdTwoLevels(Operator):
         
         newsizes[0]=0
         result[:] = newsizes[cc_low]
-        
+        '''
         
     def propagateDirty(self, slot, subindex, roi):
         key = [slice(None, None, None)]*len(self.InputImage.meta.shape)
         self.Output.setDirty(key)
     
     def filterCC(self, data):
+        #adapt from lazyflow.opFilterLabels, which in turn is taken from 
+        #http://github.com/jni/ray/blob/develop/ray/morpho.py (MIT License)
         
-        sizes = numpy.bincount(data.flat)
-        numgood=1
-        newsizes = numpy.zeros((len(sizes),), dtype=numpy.uint32)
-        for i, s in enumerate(sizes):
-            if s>self.MinSize.value and s<self.MaxSize.value:
-                newsizes[i]=1 #numgood, if we want to relabel the cc. 1 for just thresholding
-                numgood=numgood+1
-                
-        data_filtered = newsizes[data].astype(numpy.uint8)
-        return data_filtered
+        component_sizes = numpy.bincount(data.flat)
+        too_small = component_sizes < self.MinSize.value
+        too_small_locations = too_small[data]
+        data[too_small_locations] = 0
+        too_large = component_sizes > self.MaxSize.value
+        too_large_locations = too_large[data]
+        data[too_large_locations]=0
+        #get rid of component numbers, they are meaningless anyway
+        return data.astype(numpy.bool)
         
         
     def extractCC(self, data, threshold):
