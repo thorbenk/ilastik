@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PreprocessDrawer</class>
+ <widget class="QWidget" name="PreprocessDrawer">
+  <property name="windowTitle">
+   <string>PreprocessDrawer</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>221</width>
+     <height>501</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="rightMargin">
+     <number>12</number>
+    </property>
+    
+			 <item>
+				 <widget class="QRadioButton" name="filter1">
+				  <property name="toolTip">
+				      <string>choose this filter for preprocessing</string>
+				  </property>
+				  <property name="text">
+					  <string>lowest Eigenvalue of Hessian</string>
+				  </property>
+				 </widget>
+			</item>
+			<item>
+				 <widget class="QRadioButton" name="filter2">
+				  <property name="toolTip">
+				   <string>choose this filter for preprocessing</string>
+				  </property>
+				  <property name="text">
+					  <string>greatest eigenvalue of Hessian</string>
+				  </property>
+				 </widget>
+			</item>
+			<item>
+				 <widget class="QRadioButton" name="filter3">
+				  <property name="toolTip">
+				   <string>choose this filter for preprocessing</string>
+				  </property>
+				  <property name="text">
+					  <string>Gaussian gradient magnitude</string>
+				  </property>
+				 </widget>
+			</item>
+			<item>
+				 <widget class="QRadioButton" name="filter4">
+				  <property name="toolTip">
+				   <string>choose this filter for preprocessing</string>
+				  </property>
+				  <property name="text">
+					  <string>Gaussian smoothing</string>
+				  </property>
+				 </widget>
+			</item>
+			<item>
+				 <widget class="QRadioButton" name="filter5">
+				  <property name="toolTip">
+				   <string>choose this filter for preprocessing</string>
+				  </property>
+				  <property name="text">
+					  <string>negative Gaussian smoothing</string>
+				  </property>
+				 </widget>
+			</item>
+			 
+		
+    
+    <item>
+     <widget class="QDoubleSpinBox" name="sigmaSpin">
+      <property name="toolTip">
+       <string>sigma Value for Preprocessing</string>
+      </property>
+      <property name="value">
+	   <double>1.6</double>
+      </property>
+      <property name="singleStep">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>0.9</double>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="Sigma">
+      <property name="text">
+       <string>Sigma</string>
+      </property>
+      <property name="buddy">
+	   <name>sigmaSpin</name>
+	  </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="runButton">
+      <property name="toolTip">
+       <string>Start Preprocessing for selected Data</string>
+      </property>
+      <property name="text">
+       <string>Run Preprocessing</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../gui/icons/32x32/actions/media-seek-forward.png</normaloff>../../../gui/icons/32x32/actions/media-seek-forward.png</iconset>
+      </property>
+      <property name="autoDefault">
+       <bool>true</bool>
+      </property>
+      <property name="default">
+       <bool>true</bool>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    
+    <item>
+     <widget class="QCheckBox" name="writeprotectBox">
+      <property name="toolTip">
+       <string>write-protect current carving graph file</string>
+      </property>
+      <property name="text">
+       <string>write-protect</string>
+      </property>
+     </widget>
+    </item>
+    
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>200</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

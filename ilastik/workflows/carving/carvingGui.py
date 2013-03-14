@@ -174,8 +174,6 @@ class CarvingGui(LabelingGui):
         addLayerToggleShortcut("done seg", "b")
         addLayerToggleShortcut("hints","h")
 
-        '''
-        #For benchmarking, this shows the time it took each tile to arrive.
         def updateLayerTimings():
             s = "Layer timings:\n"
             for l in self.layerstack:
@@ -185,7 +183,6 @@ class CarvingGui(LabelingGui):
         t.setInterval(1*1000) # 10 seconds
         t.start()
         t.timeout.connect(updateLayerTimings)
-        '''
 
         def makeColortable():
             self._doneSegmentationColortable = [QColor(0,0,0,0).rgba()]
@@ -243,18 +240,18 @@ class CarvingGui(LabelingGui):
 
         op = self.topLevelOperatorView.opCarving
         if not self._renderMgr.ready:
-            self._renderMgr.setup(op._mst.raw.shape)
+            self._renderMgr.setup(op.MST.value.raw.shape)
 
         # remove nonexistent objects
         self._shownObjects3D = dict((k, v) for k, v in self._shownObjects3D.iteritems()
-                                    if k in op._mst.object_lut.keys())
+                                    if k in op.MST.value.object_lut.keys())
 
-        lut = numpy.zeros(len(op._mst.objects.lut), dtype=numpy.int32)
+        lut = numpy.zeros(len(op.MST.value.objects.lut), dtype=numpy.int32)
         for name, label in self._shownObjects3D.iteritems():
-            objectSupervoxels = op._mst.object_lut[name]
+            objectSupervoxels = op.MST.value.object_lut[name]
             lut[objectSupervoxels] = label
 
-        self._renderMgr.volume = lut[op._mst.regionVol]
+        self._renderMgr.volume = lut[op.MST.value.regionVol]
         self._update_colors()
         self._renderMgr.update()
 
@@ -263,7 +260,7 @@ class CarvingGui(LabelingGui):
         ctable = self._doneSegmentationLayer.colorTable
 
         for name, label in self._shownObjects3D.iteritems():
-            color = QColor(ctable[op._mst.object_names[name]])
+            color = QColor(ctable[op.MST.value.object_names[name]])
             color = (color.red() / 255.0, color.green() / 255.0, color.blue() / 255.0)
             self._renderMgr.setColor(label, color)
 
@@ -306,8 +303,8 @@ class CarvingGui(LabelingGui):
         #segmentation 
         seg = self.topLevelOperatorView.opCarving.Segmentation
         
-        #seg = self.topLevelOperatorView.opCarving._mst.segmentation
-        #temp = self._done_lut[self._mst.regionVol[sl[1:4]]]
+        #seg = self.topLevelOperatorView.opCarving.MST.value.segmentation
+        #temp = self._done_lut[self.MST.value.regionVol[sl[1:4]]]
         if seg.ready():
             #source = RelabelingArraySource(seg)
             #source.setRelabeling(numpy.arange(256, dtype=numpy.uint8))
@@ -390,7 +387,9 @@ class CarvingGui(LabelingGui):
         #
         # here we load the actual raw data from an ArraySource rather than from a LazyflowSource for speed reasons
         #
-        raw = self.topLevelOperatorView.opCarving._mst.raw
+        
+        #
+        raw = numpy.add.reduce(self.topLevelOperatorView.RawData.value,3)
         raw5D = numpy.zeros((1,)+raw.shape+(1,), dtype=raw.dtype)
         raw5D[0,:,:,:,0] = raw[:,:,:]
         layer = GrayscaleLayer(ArraySource(raw5D), direct=True)

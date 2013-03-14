@@ -3,6 +3,7 @@
 import os 
 import functools
 from carvingWorkflow import CarvingWorkflow
+import h5py
 
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -13,11 +14,7 @@ if __name__ == "__main__":
     import socket
     import logging
     logging.basicConfig(level=logging.INFO)
-
-#    import sys
-#    sys.argv.append( "/magnetic/denk.h5" )
-#    sys.argv.append( "/magnetic/carving_test.ilp" )
-
+    
     graph = lazyflow.graph.Graph()
     
     from optparse import OptionParser
@@ -32,9 +29,23 @@ if __name__ == "__main__":
                   help="specify a file which adds a pmap overlay")
 
     options, args = parser.parse_args()
-    print options,args
     
-    if len(args) == 2:
+    if len(args)==0:
+        workflowKwargs={'hintoverlayFile' : options.hintoverlayFile,
+                        'pmapoverlayFile' : options.pmapoverlayFile }
+        startShellGui(functools.partial(CarvingWorkflow, **workflowKwargs))
+        
+    elif len(args)==1:
+        projectFilename = args[0]
+        
+        def loadProject(shell):
+            shell.openProjectFile(projectFilename)
+        
+        workflowKwargs={'hintoverlayFile' : options.hintoverlayFile,
+                        'pmapoverlayFile' : options.pmapoverlayFile }
+        startShellGui( functools.partial(CarvingWorkflow, **workflowKwargs), loadProject)
+        
+    elif len(args) == 2:
         carvingGraphFilename = args[0]
         projectFilename = args[1]
         def loadProject(shell):
@@ -45,6 +56,7 @@ if __name__ == "__main__":
             
             workflow = shell.projectManager.workflow
             workflow.setCarvingGraphFile(carvingGraphFilename)
+            
             # Add a file
             from ilastik.applets.dataSelection.opDataSelection import DatasetInfo
             info = DatasetInfo()
@@ -59,4 +71,4 @@ if __name__ == "__main__":
                         'pmapoverlayFile' : options.pmapoverlayFile }
         startShellGui( functools.partial(CarvingWorkflow, **workflowKwargs), loadProject)
     else:
-        parser.error("incorrect number of arguments %d, expected 2" % len(args))
+        parser.error("incorrect number of arguments %d, expected at most 2" % len(args))
