@@ -98,7 +98,7 @@ class PreprocessingGui(QMainWindow):
             self.drawer.sigmaSpin.setValue(self.topLevelOperatorView.Sigma.value)
             self.drawer.sigmaSpin.valueChanged.connect(self.handleSigmaValueChanged)
             
-            self.drawer.writeprotectBox.clicked.connect(self.handleWriterprotectBoxClicked)
+            self.drawer.writeprotectBox.stateChanged.connect(self.handleWriterprotectBoxClicked)
     
     def handleFilterChanged(self):
         choice =  [f.isChecked() for f in self.filterbuttons].index(True)
@@ -111,10 +111,15 @@ class PreprocessingGui(QMainWindow):
         self.topLevelOperatorView.Sigma.setValue(self.drawer.sigmaSpin.value())
     
     def handleRunButtonClicked(self):
-        print self.topLevelOperatorView.PreprocessedData[:].wait()
         self.topLevelOperatorView.PreprocessedData[:].wait()
+        self.drawer.writeprotectBox.setChecked(True)
         
     def handleWriterprotectBoxClicked(self):
+        iswriteprotect = self.drawer.writeprotectBox.checkState()
+        for f in self.filterbuttons:
+            f.setEnabled(not iswriteprotect)
+        self.drawer.sigmaSpin.setEnabled(not iswriteprotect)
+        self.drawer.runButton.setEnabled(not iswriteprotect)
         self.topLevelOperatorView.setWriteProtect(self.drawer.writeprotectBox.checkState())
     
     def centralWidget( self ):
@@ -137,7 +142,7 @@ class PreprocessingGui(QMainWindow):
     def laneRemoved(self,laneIndex,finalLength):
         pass
     def stopAndCleanUp(self):
-        #ToDo: Clea Up!
+        #ToDo: Clean Up!
         pass
     
     

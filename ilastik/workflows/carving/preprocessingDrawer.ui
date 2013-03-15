@@ -25,7 +25,7 @@
 				      <string>choose this filter for preprocessing</string>
 				  </property>
 				  <property name="text">
-					  <string>lowest Eigenvalue of Hessian</string>
+					  <string>bright lines (ridges)</string>
 				  </property>
 				 </widget>
 			</item>
@@ -35,7 +35,7 @@
 				   <string>choose this filter for preprocessing</string>
 				  </property>
 				  <property name="text">
-					  <string>greatest eigenvalue of Hessian</string>
+					  <string>dark lines (valleys)</string>
 				  </property>
 				 </widget>
 			</item>
@@ -45,7 +45,7 @@
 				   <string>choose this filter for preprocessing</string>
 				  </property>
 				  <property name="text">
-					  <string>Gaussian gradient magnitude</string>
+					  <string>step edges</string>
 				  </property>
 				 </widget>
 			</item>
@@ -55,7 +55,7 @@
 				   <string>choose this filter for preprocessing</string>
 				  </property>
 				  <property name="text">
-					  <string>Gaussian smoothing</string>
+					  <string>original image (optional smoothing)</string>
 				  </property>
 				 </widget>
 			</item>
@@ -65,39 +65,41 @@
 				   <string>choose this filter for preprocessing</string>
 				  </property>
 				  <property name="text">
-					  <string>negative Gaussian smoothing</string>
+					  <string>inverted original image</string>
 				  </property>
 				 </widget>
 			</item>
-			 
-		
+	<item>
+	<layout class="QHBoxLayout" name="horizontalLayout">
+		<item>
+		 <widget class="QLabel" name="Sigma">
+		  <property name="text">
+		   <string>Sigma</string>
+		  </property>
+		  <property name="buddy">
+		   <name>sigmaSpin</name>
+		  </property>
+		 </widget>
+		</item>
+		<item>
+		 <widget class="QDoubleSpinBox" name="sigmaSpin">
+		  <property name="toolTip">
+		   <string>sigma Value for Preprocessing</string>
+		  </property>
+		  <property name="value">
+		   <double>1.6</double>
+		  </property>
+		  <property name="singleStep">
+		   <double>0.1</double>
+		  </property>
+		  <property name="minimum">
+		   <double>0.9</double>
+		  </property>
+		 </widget>
+		</item>
+    </layout>
+    </item>
     
-    <item>
-     <widget class="QDoubleSpinBox" name="sigmaSpin">
-      <property name="toolTip">
-       <string>sigma Value for Preprocessing</string>
-      </property>
-      <property name="value">
-	   <double>1.6</double>
-      </property>
-      <property name="singleStep">
-       <number>1</number>
-      </property>
-      <property name="minimum">
-       <double>0.9</double>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="Sigma">
-      <property name="text">
-       <string>Sigma</string>
-      </property>
-      <property name="buddy">
-	   <name>sigmaSpin</name>
-	  </property>
-     </widget>
-    </item>
     <item>
      <widget class="QPushButton" name="runButton">
       <property name="toolTip">

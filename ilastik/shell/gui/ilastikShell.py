@@ -506,7 +506,7 @@ class IlastikShell( QMainWindow ):
             if updatedDrawerWidget.layout() is not None:
                 sizeHint = updatedDrawerWidget.layout().geometry().size()
             else:
-                sizeHint = QSize(0,0)
+                sizeHint = QSize(200,300)
     
             rootItem = self.appletBar.invisibleRootItem()
             appletTitleItem = rootItem.child(applet_index)

@@ -36,8 +36,11 @@ class PreprocessingSerializer( AppletSerializer ):
             opPre.PreprocessedData.setDirty()
            
     def isDirty(self):
-        return True
-    
+		for opPre in self._o.innerOperators:			
+			if opPre._prepData is None:
+				return True
+		return False
+	
     #this is present only for the serializer AppletInterface
     def unload(self):
         pass

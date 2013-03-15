@@ -2,7 +2,11 @@ from lazyflow.graph import Operator, InputSlot, OutputSlot, OperatorWrapper
 from lazyflow.operators.ioOperators import OpStreamingHdf5Reader, OpInputDataReader
 from ilastik.utility.operatorSubView import OperatorSubView
 
+from ilastik.shell.gui.ilastikShell import ProgressDisplayManager
+
 from lazyflow.operators import Op5ifyer
+from lazyflow.request import Request
+from ilastik.applets.base.applet import ControlCommand
 
 from cylemon.segmentation import MSTSegmentor
 import vigra
@@ -27,7 +31,8 @@ class OpPreprocessing(Operator):
         super(OpPreprocessing, self).__init__(*args, **kwargs)
         self._writeprotect = None
         self._prepData = None
-    
+        self.applet = self.parent.parent.preprocessingApplet
+        
     def setSigma(self,s):
         #ToDo: SetDirty!
         self.Sigma.setValue(s)
@@ -49,10 +54,17 @@ class OpPreprocessing(Operator):
     
     def setupOutputs(self):
         self.PreprocessedData.meta.shape = (1,)
+        self.PreprocessedData.meta.dtype = object
+        
         
     def execute(self,slot,subindex,roi,result):
-        print self._prepData
-        if self._prepData is not None:return self._prepData
+        if self._prepData is not None:
+            print "Cache",self._prepData
+            return self._prepData
+        
+        def updateProgressBar(x):
+            self.applet.progressSignal.emit(x)
+        
         volume5d = self.RawData[:].wait()
         sigma = self.Sigma[:].wait()
         
@@ -91,11 +103,14 @@ class OpPreprocessing(Operator):
         volume_mi = numpy.min(volume_feat)
         volume_feat = (volume_feat - volume_mi) * 255.0 / (volume_ma-volume_mi)
         print "Watershed..."
+        self.applet.progressSignal.emit(0)
         labelVolume = vigra.analysis.watersheds(volume_feat)[0].astype(numpy.int32)
         
         print labelVolume.shape, labelVolume.dtype
-        result = MSTSegmentor(labelVolume, volume_feat.astype(numpy.float32), edgeWeightFunctor = "minimum")
-        result.raw = volume#5d
+        mst= MSTSegmentor(labelVolume, volume_feat.astype(numpy.float32), edgeWeightFunctor = "minimum",progressCallback = updateProgressBar)
+        mst.raw = volume
         
+        result[0] = mst
+
         self._prepData = result
         return result

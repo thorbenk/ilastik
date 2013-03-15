@@ -452,8 +452,11 @@ class OpCarving(Operator):
     def execute(self, slot, subindex, roi, result):
         start = time.time()
         if self._mst is None:
-            self._mst = self.MST[:].wait()
-            print self._mst
+            req = self.MST[:]
+            req.submit()
+            self._mst = req.wait()
+        self._mst = self.MST.value
+        print "execute",self._mst
         
         sl = roi.toSlice()
         if slot == self.Segmentation:
@@ -496,10 +499,10 @@ class OpCarving(Operator):
                 return result
         else:
             raise RuntimeError("unknown slot")
-
         return temp #avoid copying data
 
     def setInSlot(self, slot, subindex, roi, value):
+        print "inslot"
         key = roi.toSlice()
         if slot == self.WriteSeeds: 
             self.opLabeling.LabelInput[roi.toSlice()] = value
@@ -545,7 +548,8 @@ class OpCarving(Operator):
             self.Segmentation.setDirty(slice(None))
             self.HasSegmentation.setValue(True)
         elif slot == self.MST:
-            self._mst = self.MST.value
+            self._mst = None
+            #self._mst = self.MST.value
             '''elif slot == self.CarvingGraphFile:
             
             if self._mst is not None:

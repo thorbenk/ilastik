@@ -33,7 +33,11 @@ if __name__ == "__main__":
     if len(args)==0:
         workflowKwargs={'hintoverlayFile' : options.hintoverlayFile,
                         'pmapoverlayFile' : options.pmapoverlayFile }
-        startShellGui(functools.partial(CarvingWorkflow, **workflowKwargs))
+        
+        def loadProject(shell):
+            shell.openProjectFile("C:/Users/Ben/Desktop/carvingData/test3.ilp")
+        
+        startShellGui(functools.partial(CarvingWorkflow, **workflowKwargs),loadProject)
         
     elif len(args)==1:
         projectFilename = args[0]
