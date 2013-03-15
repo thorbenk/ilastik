@@ -111,9 +111,28 @@ class PreprocessingGui(QMainWindow):
         self.topLevelOperatorView.Sigma.setValue(self.drawer.sigmaSpin.value())
     
     def handleRunButtonClicked(self):
-        self.topLevelOperatorView.PreprocessedData[:].wait()
-        self.drawer.writeprotectBox.setChecked(True)
+        req = self.topLevelOperatorView.PreprocessedData[:]
+        req.notify_finished( self._preprocessing_finished )
+        req.notify_failed( self._handle_failure )
+        req.notify_cancelled( self._handle_cancel )
+        req.submit()
         
+        self._req = req
+        # disable downstream
+
+    def _onCancelClicked(self):
+        self._req.cancel()
+        progressSignal.emit( 100, cancelled=True )
+        
+    @threadRouted
+    def _preprocessing_finished(self, result):
+        print "something"
+        self.drawer.writeprotectBox.setChecked(True)
+        # re-enable downstream
+
+    def _handle_failure(self, exc):
+        pass
+    
     def handleWriterprotectBoxClicked(self):
         iswriteprotect = self.drawer.writeprotectBox.checkState()
         for f in self.filterbuttons:
